@@ -9,7 +9,16 @@
       name="description"
       content="Web site created using create-react-app"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link
+      rel="stylesheet"
+      href="path/to/font-awesome/css/font-awesome.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+      crossorigin="anonymous"
+    />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -40,4 +49,26 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script>
+    var sidebarwidth = 220;
+
+    var sidebar = document.getElementById("sidebar");
+    var topheader = document.getElementById("topheader");
+
+    sidebar.style.width = sidebarwidth + "px";
+    topheader.style.left = sidebarwidth + "px";
+
+    let collapsed = false;
+
+    function collapsesidebar() {
+      console.log(collapsed);
+      if (collapsed) {
+        sidebar.style.width = sidebarwidth + "px";
+        collapsed = false;
+      } else {
+        sidebar.style.width = 40 + "px";
+        collapsed = true;
+      }
+    }
+  </script>
 </html>
