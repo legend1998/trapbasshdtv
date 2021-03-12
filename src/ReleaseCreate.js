@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import TopHeader from "./TopHeader";
 import CopyrightIcon from "@material-ui/icons/Copyright";
@@ -49,8 +48,8 @@ function ReleaseCreate() {
   };
 
   return (
-    <div className="release-create flex-fill ">
-      <div className="top-header-container">
+    <div className="release-create col-sm ">
+      <div className="top-header-container ">
         <TopHeader heading="Create Release" />
       </div>
       <div className="container-fluid">
@@ -91,7 +90,7 @@ function ReleaseCreate() {
         </div>
 
         <div className="" id="releasetab-container">
-          <div className="container row  border flex-fill" id="release-tab1">
+          <div className=" row  mt-4 " id="release-tab1">
             <div className="col d-flex align-items-center justify-content-center flex-column">
               <input type="file" className="btn file-input custom-file-input" />
               <p>Artwork guidelines</p>
@@ -105,7 +104,6 @@ function ReleaseCreate() {
                   <p>EP</p>
                   <p>Single</p>
                   <p>Album</p>
-                  <p>Compilation</p>
                 </div>
               </div>
               <div className="">

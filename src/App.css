@@ -26,39 +26,22 @@
   outline: none;
   border: 1px solid white;
 }
-
+.side-header {
+  min-width: 220px;
+}
 .input-field:focus {
   border: 2px solid rgb(111, 111, 255);
 }
 
-.main-app {
-  display: flex;
-  min-width: 700px;
-}
-
-.side-header {
-  transition: 200ms;
-  animation-timing-function: ease-in-out;
-  z-index: 999;
-}
 .header-box {
   background-color: rgb(36, 34, 34);
   overflow: hidden;
   height: 100vh;
+  z-index: 100;
   position: fixed;
-  width: inherit;
+  width: 220px;
 }
 
-.top-header-place {
-  height: 50px;
-}
-.topheader {
-  top: 0;
-  transition: 200ms;
-  animation-timing-function: ease-in-out;
-  right: 0;
-  position: fixed;
-}
 .logo-side_header {
   min-height: 70px;
 }
@@ -135,9 +118,7 @@
   padding: 0 5px 2px;
   cursor: pointer;
 }
-.release-create {
-  min-width: 600px;
-}
+
 .release-tabs {
   display: none;
 }
@@ -200,11 +181,55 @@
   margin: 10px;
 }
 
-.top-header-container {
-  height: 70px;
-}
-
 .ticket-selector {
   width: 20%;
   min-width: 200px;
+}
+.topheader-text {
+  padding-left: 20px;
+}
+
+.mobileheader {
+  display: block;
+  min-width: 60px;
+  z-index: 100;
+}
+.menuicon {
+  height: 40px;
+  cursor: pointer;
+  padding-left: 10px;
+}
+
+#mobile-nav {
+  display: none;
+}
+
+#mobile-nav > a {
+  text-decoration: none;
+  width: 100%;
+  color: white;
+  border: 1px solid rgb(51, 51, 51);
+  height: 50px;
+  padding-top: 10px;
+  text-align: center;
+  text-align: center;
+}
+.logout {
+  position: fixed;
+  color: black;
+  width: 300px;
+  display: none;
+  transition: 200ms;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  height: 200px;
+  border-radius: 5px;
+  box-shadow: 0 0 16px 4px rgb(223, 223, 223);
+  background-color: rgb(223, 223, 223);
+}
+.logout > .text {
+  height: 130px;
+  text-align: center;
+  padding-top: 50px;
 }

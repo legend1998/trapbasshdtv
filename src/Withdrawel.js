@@ -3,9 +3,9 @@ import TopHeader from "./TopHeader";
 
 function Withdrawel() {
   return (
-    <div className="flex-fill withdrawel">
+    <div className="col-sm withdrawel ">
       <div className="top-header-container">
-        <TopHeader heading="Reports" />
+        <TopHeader heading="My Profile" />
       </div>
       <div className="container-fluid">this is withdrawel</div>
     </div>

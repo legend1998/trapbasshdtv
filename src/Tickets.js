@@ -3,7 +3,7 @@ import TopHeader from "./TopHeader";
 
 function Tickets() {
   return (
-    <div className="tickets flex-fill">
+    <div className="tickets col-sm ">
       <div className="top-header-container">
         <TopHeader heading="Tickets" />
       </div>

@@ -3,8 +3,8 @@ import TopHeader from "./TopHeader";
 
 function Dashboard() {
   return (
-    <div className="dashboard flex-fill">
-      <div className="top-header-place">
+    <div className="dashboard col-sm">
+      <div className="top-header-container">
         <TopHeader heading="Dashboard" />
       </div>
       <h1> dashboard </h1>

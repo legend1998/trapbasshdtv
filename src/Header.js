@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import logo from "./thumb.jpg";
 import HomeIcon from "@material-ui/icons/Home";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import NewReleasesIcon from "@material-ui/icons/NewReleases";
@@ -8,11 +7,9 @@ import ReportIcon from "@material-ui/icons/Report";
 import ConfirmationNumberIcon from "@material-ui/icons/ConfirmationNumber";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import MenuIcon from "@material-ui/icons/Menu";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-function Header() {
-  const [collapsed, setcollapsed] = useState(false);
+import CancelIcon from "@material-ui/icons/Cancel";
 
+function Header() {
   const toggler = (e) => {
     var nav = document.getElementById("sidebar-nav").childNodes;
     nav.forEach((element) => {
@@ -21,35 +18,14 @@ function Header() {
     e.currentTarget.classList.add("active");
   };
 
-  useEffect(() => {
-    document.addEventListener("resize", () => {
-      if (document.body.clientWidth < 700) {
-        setcollapsed(true);
-      }
-    });
-  }, []);
-
-  const collapsesidebar = () => {
-    var sidebar = document.getElementById("sidebar");
-    var topheader = document.getElementById("topheader");
-    var logoside = document.getElementById("logoside");
-
-    if (collapsed) {
-      sidebar.style.width = 50 + "px";
-      topheader.style.left = 50 + "px";
-      logoside.style.display = "none";
-
-      setcollapsed(false);
-    } else {
-      sidebar.style.width = 200 + "px";
-      topheader.style.left = 200 + "px";
-      logoside.style.display = "block";
-
-      setcollapsed(true);
-    }
+  const logout = () => {
+    document.getElementById("logout").style.display = "block";
+  };
+  const close = () => {
+    document.getElementById("logout").style.display = "none";
   };
   return (
-    <div className="side-header" id="sidebar">
+    <div className="side-header col-sm-2" id="sidebar">
       <div className="header-box text-light">
         <div className="logo-side_header d-flex align-items-center justify-content-around ">
           <img
@@ -57,13 +33,15 @@ function Header() {
             src="https://app.fronicmedia.com/static/media/Fronic_Logo_white.27f34786.png"
             alt=""
           />
-          {!collapsed ? (
-            <MenuIcon role="button" onClick={collapsesidebar} />
-          ) : (
-            <ArrowBackIosIcon role="button" onClick={collapsesidebar} />
-          )}
         </div>
-
+        <div className="logout" id="logout">
+          <CancelIcon onClick={close} />
+          <div className="text">Are you suar?</div>
+          <div className=" border d-flex justify-content-around">
+            <p className="btn text-center btn-outline-dark flex-fill">Yes</p>
+            <p className=" btn text-center flex-fill btn-outline-dark">No</p>
+          </div>
+        </div>
         <div className="navigation mt-4">
           <div className="navbar-nav sidebar-nav " id="sidebar-nav">
             <Link to="/" className="active   " onClick={(e) => toggler(e)}>
@@ -80,7 +58,7 @@ function Header() {
             </Link>
             <Link to="reports" onClick={(e) => toggler(e)}>
               <ReportIcon className="navitem" />
-              Reports
+              Poyouts
             </Link>
             <Link to="tickets" onClick={(e) => toggler(e)}>
               <ConfirmationNumberIcon className="navitem" />
@@ -88,9 +66,9 @@ function Header() {
             </Link>
             <Link to="withdrawel" onClick={(e) => toggler(e)}>
               <MonetizationOnIcon className="navitem" />
-              WithDrawel
+              My Profile
             </Link>
-            <Link to="logout">
+            <Link onClick={logout}>
               <ExitToAppIcon className="navitem" />
               Log out
             </Link>

@@ -3,9 +3,9 @@ import TopHeader from "./TopHeader";
 
 function Reports() {
   return (
-    <div className="flex-fill reports">
+    <div className="col-sm  reports">
       <div className="top-header-container">
-        <TopHeader heading="Reports" />
+        <TopHeader heading="Payouts" />
       </div>
       <div className="container-fluid">this is reports</div>
     </div>

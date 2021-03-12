@@ -9,18 +9,29 @@ import Withdrawel from "./Withdrawel";
 import Tickets from "./Tickets";
 import Reports from "./Reports";
 import ReleaseCreate from "./ReleaseCreate";
+import { useState } from "react";
+import { useEffect } from "react";
+import MobileHeader from "./MobileHeader";
 
 function App() {
+  const [width, setwidth] = useState(window.innerWidth);
   let login = false;
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setwidth(window.innerWidth);
+      console.log(width);
+    });
+  }, [width]);
 
   return (
     <div className="App">
       {login ? (
         <Login />
       ) : (
-        <div className="main-app">
+        <div className="row">
           <Router>
-            <Header />
+            {width < 720 ? <MobileHeader /> : <Header />}
             <Switch>
               <Route path="/catalog">
                 <Catalog />
@@ -41,6 +52,7 @@ function App() {
               <Route path="/dashboard">
                 <Dashboard />
               </Route>
+
               <Route path="/">
                 <Dashboard />
               </Route>

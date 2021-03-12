@@ -3,7 +3,7 @@ import TopHeader from "./TopHeader";
 
 function Catalog() {
   return (
-    <div className="catalog flex-fill">
+    <div className="catalog   col-sm">
       <div className="top-header-container">
         <TopHeader heading="Catalog" />
       </div>
