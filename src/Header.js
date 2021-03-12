@@ -8,8 +8,10 @@ import ConfirmationNumberIcon from "@material-ui/icons/ConfirmationNumber";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { useStateValue } from "./StateProvider";
 
 function Header() {
+  const [{ user }, dispatch] = useStateValue();
   const toggler = (e) => {
     var nav = document.getElementById("sidebar-nav").childNodes;
     nav.forEach((element) => {
@@ -18,11 +20,16 @@ function Header() {
     e.currentTarget.classList.add("active");
   };
 
-  const logout = () => {
+  const logoutpopup = () => {
     document.getElementById("logout").style.display = "block";
   };
   const close = () => {
     document.getElementById("logout").style.display = "none";
+  };
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    dispatch({ type: "DELETE_USER" });
   };
   return (
     <div className="side-header col-sm-2" id="sidebar">
@@ -38,8 +45,18 @@ function Header() {
           <CancelIcon onClick={close} />
           <div className="text">Are you suar?</div>
           <div className=" border d-flex justify-content-around">
-            <p className="btn text-center btn-outline-dark flex-fill">Yes</p>
-            <p className=" btn text-center flex-fill btn-outline-dark">No</p>
+            <p
+              className="btn text-center btn-outline-dark flex-fill"
+              onClick={logout}
+            >
+              Yes
+            </p>
+            <p
+              className=" btn text-center flex-fill btn-outline-dark"
+              onClick={close}
+            >
+              No
+            </p>
           </div>
         </div>
         <div className="navigation mt-4">
@@ -68,7 +85,7 @@ function Header() {
               <MonetizationOnIcon className="navitem" />
               My Profile
             </Link>
-            <Link onClick={logout}>
+            <Link onClick={logoutpopup}>
               <ExitToAppIcon className="navitem" />
               Log out
             </Link>

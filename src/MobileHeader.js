@@ -13,7 +13,7 @@ function MobileHeader() {
 
   const togglemenu = () => {
     var menu = document.getElementById("mobile-nav");
-    if (menu.style.display == "none") {
+    if (menu.style.display === "none") {
       menu.style.display = "flex";
     } else {
       menu.style.display = "none";

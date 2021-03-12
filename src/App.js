@@ -12,22 +12,39 @@ import ReleaseCreate from "./ReleaseCreate";
 import { useState } from "react";
 import { useEffect } from "react";
 import MobileHeader from "./MobileHeader";
+import Signup from "./Signup";
+import { useStateValue } from "./StateProvider";
 
 function App() {
   const [width, setwidth] = useState(window.innerWidth);
+  const [{ user }, dispatch] = useStateValue();
   let login = false;
 
   useEffect(() => {
     window.addEventListener("resize", () => {
       setwidth(window.innerWidth);
-      console.log(width);
     });
-  }, [width]);
+
+    let u = localStorage.getItem("user");
+    dispatch({
+      type: "SET_USER",
+      user: u,
+    });
+  }, [width, dispatch]);
 
   return (
     <div className="App">
-      {login ? (
-        <Login />
+      {!user ? (
+        <Router>
+          <Switch>
+            <Route path="/signup">
+              <Signup />
+            </Route>
+            <Route path="/">
+              <Login />
+            </Route>
+          </Switch>
+        </Router>
       ) : (
         <div className="row">
           <Router>

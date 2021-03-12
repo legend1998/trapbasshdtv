@@ -49,26 +49,4 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
-  <script>
-    var sidebarwidth = 220;
-
-    var sidebar = document.getElementById("sidebar");
-    var topheader = document.getElementById("topheader");
-
-    sidebar.style.width = sidebarwidth + "px";
-    topheader.style.left = sidebarwidth + "px";
-
-    let collapsed = false;
-
-    function collapsesidebar() {
-      console.log(collapsed);
-      if (collapsed) {
-        sidebar.style.width = sidebarwidth + "px";
-        collapsed = false;
-      } else {
-        sidebar.style.width = 40 + "px";
-        collapsed = true;
-      }
-    }
-  </script>
 </html>

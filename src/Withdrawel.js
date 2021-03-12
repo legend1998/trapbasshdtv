@@ -3,7 +3,7 @@ import TopHeader from "./TopHeader";
 
 function Withdrawel() {
   return (
-    <div className="col-sm withdrawel ">
+    <div className="col-sm withdrawel p-0">
       <div className="top-header-container">
         <TopHeader heading="My Profile" />
       </div>

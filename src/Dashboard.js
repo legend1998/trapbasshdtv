@@ -3,7 +3,7 @@ import TopHeader from "./TopHeader";
 
 function Dashboard() {
   return (
-    <div className="dashboard col-sm">
+    <div className="dashboard col-sm p-0">
       <div className="top-header-container">
         <TopHeader heading="Dashboard" />
       </div>

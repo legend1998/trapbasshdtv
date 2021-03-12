@@ -3,7 +3,7 @@ import TopHeader from "./TopHeader";
 
 function Tickets() {
   return (
-    <div className="tickets col-sm ">
+    <div className="tickets col-sm p-0">
       <div className="top-header-container">
         <TopHeader heading="Tickets" />
       </div>

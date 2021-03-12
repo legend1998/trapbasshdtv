@@ -48,7 +48,7 @@ function ReleaseCreate() {
   };
 
   return (
-    <div className="release-create col-sm ">
+    <div className="release-create col-sm p-0">
       <div className="top-header-container ">
         <TopHeader heading="Create Release" />
       </div>

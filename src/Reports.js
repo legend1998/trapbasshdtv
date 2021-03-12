@@ -3,7 +3,7 @@ import TopHeader from "./TopHeader";
 
 function Reports() {
   return (
-    <div className="col-sm  reports">
+    <div className="col-sm p-0 reports">
       <div className="top-header-container">
         <TopHeader heading="Payouts" />
       </div>

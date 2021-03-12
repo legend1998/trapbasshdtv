@@ -14,6 +14,7 @@ const app = firebase.initializeApp(firebaseConfig);
 
 const firedb = app.firestore();
 const firestorage = app.storage();
+const auth = app.auth();
 
 // const handlethumbnailUpload = () => {
 //     if (!thumbnail) return;
@@ -35,4 +36,4 @@ const firestorage = app.storage();
 //       });
 //   };
 
-export { firedb, firestorage };
+export { firedb, firestorage, auth };
