@@ -2,8 +2,33 @@ import { Link } from "react-router-dom";
 import TopHeader from "./TopHeader";
 import CopyrightIcon from "@material-ui/icons/Copyright";
 import Song from "./Song";
+import { firedb, firestorage } from "./firebaseConfig";
+import { useState } from "react";
 
 function ReleaseCreate() {
+  const [SongDetail, setSongDetail] = useState(null);
+
+  const imageupload = (e) => {
+    var image = e.target.files[0];
+    if (!image) return;
+
+    var storageRef = firestorage.ref();
+    storageRef
+      .child(`thumbnail/${image.name + Date.now()}`)
+      .put(image)
+      .then((snapshot) => {
+        snapshot.ref
+          .getDownloadURL()
+          .then(function (downloadURL) {
+            setSongDetail({ ...SongDetail, thumbnail: downloadURL });
+            console.log("File available at", downloadURL);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+  };
+  console.log(SongDetail);
   const toggler = (e) => {
     var nav = document.getElementById("release-nav").childNodes;
     nav.forEach((element) => {
@@ -92,7 +117,15 @@ function ReleaseCreate() {
         <div className="" id="releasetab-container">
           <div className=" row  mt-4 " id="release-tab1">
             <div className="col d-flex align-items-center justify-content-center flex-column">
-              <input type="file" className="btn file-input custom-file-input" />
+              {SongDetail.thumbnail ? (
+                <img src={SongDetail.thumbnail} width="150px" alt="thumbnail" />
+              ) : (
+                <input
+                  type="file"
+                  className="btn file-input custom-file-input"
+                  onChange={(e) => imageupload(e)}
+                />
+              )}
               <p>Artwork guidelines</p>
             </div>
             <div className="col">
@@ -101,9 +134,51 @@ function ReleaseCreate() {
                   Release Type <span className="required-span">*</span>
                 </p>
                 <div className="d-flex align-items-center justify-content-around release-type">
-                  <p>EP</p>
-                  <p>Single</p>
-                  <p>Album</p>
+                  <label>
+                    <input
+                      type="radio"
+                      name="release-type"
+                      id=""
+                      value="EP"
+                      onChange={(e) =>
+                        setSongDetail({
+                          ...SongDetail,
+                          releaseType: e.target.value,
+                        })
+                      }
+                    />
+                    Ep
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="release-type"
+                      id=""
+                      value="Single"
+                      onChange={(e) =>
+                        setSongDetail({
+                          ...SongDetail,
+                          releaseType: e.target.value,
+                        })
+                      }
+                    />
+                    Single
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="release-type"
+                      id=""
+                      value="Album"
+                      onChange={(e) =>
+                        setSongDetail({
+                          ...SongDetail,
+                          releaseType: e.target.value,
+                        })
+                      }
+                    />
+                    Album
+                  </label>
                 </div>
               </div>
               <div className="">
@@ -120,6 +195,12 @@ function ReleaseCreate() {
                     type="text"
                     placeholder="release Title"
                     name="releaseTitle"
+                    onChange={(e) =>
+                      setSongDetail({
+                        ...SongDetail,
+                        releaseTitle: e.target.value,
+                      })
+                    }
                   />
                 </label>
               </div>
@@ -128,7 +209,17 @@ function ReleaseCreate() {
                   Primary Artist<span className="required-span">*</span>
                 </p>
                 <div className="d-flex">
-                  <select name="primaryArtist" id="" className="form-control">
+                  <select
+                    name="primaryArtist"
+                    id=""
+                    className="form-control"
+                    onChange={(e) =>
+                      setSongDetail({
+                        ...SongDetail,
+                        primaryArtist: e.target.value,
+                      })
+                    }
+                  >
                     <option value="default">Default</option>
                   </select>
                   <button className="btn btn-primary">+</button>
@@ -139,7 +230,17 @@ function ReleaseCreate() {
                   featuring Artist<span className="required-span">*</span>
                 </p>
                 <div className="d-flex">
-                  <select name="featuringArtist" id="" className="form-control">
+                  <select
+                    name="featuringArtist"
+                    id=""
+                    className="form-control"
+                    onChange={(e) =>
+                      setSongDetail({
+                        ...SongDetail,
+                        featuringArtist: e.target.value,
+                      })
+                    }
+                  >
                     <option value="default">Default</option>
                   </select>
                   <button className="btn btn-primary">+</button>
@@ -149,7 +250,17 @@ function ReleaseCreate() {
                 <p className="text-muted">
                   Genre<span className="required-span">*</span>
                 </p>
-                <select name="featuringArtist" id="" className="form-control">
+                <select
+                  name="featuringArtist"
+                  id=""
+                  className="form-control"
+                  onChange={(e) =>
+                    setSongDetail({
+                      ...SongDetail,
+                      genre: e.target.value,
+                    })
+                  }
+                >
                   <option value="default">Default</option>
                 </select>
               </div>
@@ -161,6 +272,12 @@ function ReleaseCreate() {
                   type="text "
                   placeholder="Sub genre"
                   className="form-control"
+                  onChange={(e) =>
+                    setSongDetail({
+                      ...SongDetail,
+                      subGenre: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -172,6 +289,12 @@ function ReleaseCreate() {
                 type="text"
                 placeholder="Label Name"
                 className="form-control"
+                onChange={(e) =>
+                  setSongDetail({
+                    ...SongDetail,
+                    labelName: e.target.value,
+                  })
+                }
               />
               <p className="text-muted">
                 Release Date<span className="required-span">*</span> <br />
@@ -180,16 +303,42 @@ function ReleaseCreate() {
                 type="date"
                 placeholder="Release Date"
                 className="form-control"
+                onChange={(e) =>
+                  setSongDetail({
+                    ...SongDetail,
+                    releaseDate: e.target.value,
+                  })
+                }
               />
               <p className="text-muted">
                 pLine<span className="required-span">*</span> <br />
               </p>
-              <input type="text" placeholder="Line" className="form-control" />
+              <input
+                type="text"
+                placeholder="Line"
+                className="form-control"
+                onChange={(e) =>
+                  setSongDetail({
+                    ...SongDetail,
+                    pLine: e.target.value,
+                  })
+                }
+              />
               <p className="text-muted">
                 <CopyrightIcon />
                 Line <span className="required-span">*</span>
               </p>
-              <input type="text" placeholder="Line" className="form-control" />
+              <input
+                type="text"
+                placeholder="Line"
+                className="form-control"
+                onChange={(e) =>
+                  setSongDetail({
+                    ...SongDetail,
+                    cLine: e.target.value,
+                  })
+                }
+              />
               <p className="text-muted">
                 UPC/EAN <span className="required-span">*</span>
               </p>
@@ -197,6 +346,12 @@ function ReleaseCreate() {
                 type="text"
                 placeholder="UPC/EAN"
                 className="form-control"
+                onChange={(e) =>
+                  setSongDetail({
+                    ...SongDetail,
+                    upcEan: e.target.value,
+                  })
+                }
               />
               <br />
               <button className="btn btn-dark form-control">save</button>
