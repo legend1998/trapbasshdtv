@@ -11,7 +11,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { useStateValue } from "./StateProvider";
 
 function Header() {
-  const [{ user }, dispatch] = useStateValue();
+  const [dispatch] = useStateValue();
   const toggler = (e) => {
     var nav = document.getElementById("sidebar-nav").childNodes;
     nav.forEach((element) => {
@@ -85,10 +85,10 @@ function Header() {
               <MonetizationOnIcon className="navitem" />
               My Profile
             </Link>
-            <Link onClick={logoutpopup}>
+            <a onClick={logoutpopup}>
               <ExitToAppIcon className="navitem" />
               Log out
-            </Link>
+            </a>
           </div>
         </div>
       </div>

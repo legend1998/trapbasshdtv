@@ -1,12 +1,39 @@
-import { Link } from "react-router-dom";
 import TopHeader from "./TopHeader";
 import CopyrightIcon from "@material-ui/icons/Copyright";
 import Song from "./Song";
 import { firedb, firestorage } from "./firebaseConfig";
 import { useState } from "react";
+import ArtistAdd from "./ArtistAdd";
+import Platform from "./Platform";
+import SongInfo from "./SongInfo";
 
 function ReleaseCreate() {
-  const [SongDetail, setSongDetail] = useState(null);
+  const [SongDetail, setSongDetail] = useState({});
+  const [Albumid, setAlbumid] = useState(false);
+  const [Songnum, Setsongnum] = useState(1);
+  const [showArtist, setShowArtist] = useState({ show: false, name: "" });
+
+  const submitReleaseinfo = async () => {
+    if (Object.keys(SongDetail).length < 12) {
+      alert("please fill complete details.");
+      return;
+    }
+    var tab2 = document.getElementsByName("2")[0];
+    tab2.classList.remove("disabled");
+
+    firedb
+      .collection("album")
+      .add(SongDetail)
+      .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+        setAlbumid(docRef.id);
+        toggler(tab2, true);
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+        alert(error);
+      });
+  };
 
   const imageupload = (e) => {
     var image = e.target.files[0];
@@ -29,15 +56,26 @@ function ReleaseCreate() {
       });
   };
   console.log(SongDetail);
-  const toggler = (e) => {
+
+  const toggler = (e, clickcall = false) => {
+    var tab = clickcall ? e : e.currentTarget;
+    console.log(tab);
+
+    if (tab.classList.contains("disabled")) {
+      return;
+    }
+
     var nav = document.getElementById("release-nav").childNodes;
+
     nav.forEach((element) => {
       element.classList.remove("tabactive");
     });
-    e.currentTarget.classList.add("tabactive");
+
+    tab.classList.add("tabactive");
+
     var tabs = document.getElementById("releasetab-container").childNodes;
 
-    switch (e.currentTarget.getAttribute("name")) {
+    switch (tab.getAttribute("name")) {
       case "1": {
         tabs.forEach((element) => {
           element.style.display = "none";
@@ -88,37 +126,43 @@ function ReleaseCreate() {
               onClick={(e) => toggler(e)}
               name="1"
             >
-              <Link>Release Info</Link>
+              <span>Release Info</span>
             </li>
             <li
               className="nav-item disabled"
               onClick={(e) => toggler(e)}
               name="2"
             >
-              <Link>Song Info</Link>
+              <span>Song Info</span>
             </li>
             <li
               className="nav-item disabled"
               onClick={(e) => toggler(e)}
               name="3"
             >
-              <Link>Platform</Link>
+              <span>Platform</span>
             </li>
             <li
               className="nav-item disabled"
               onClick={(e) => toggler(e)}
               name="4"
             >
-              <Link>Submission</Link>
+              <span>Submission</span>
             </li>
           </ul>
         </div>
-
+        {showArtist.show ? (
+          <ArtistAdd artist={showArtist.name} setclose={setShowArtist} />
+        ) : null}
         <div className="" id="releasetab-container">
           <div className=" row  mt-4 " id="release-tab1">
             <div className="col d-flex align-items-center justify-content-center flex-column">
-              {SongDetail.thumbnail ? (
-                <img src={SongDetail.thumbnail} width="150px" alt="thumbnail" />
+              {SongDetail?.thumbnail ? (
+                <img
+                  src={SongDetail?.thumbnail}
+                  width="150px"
+                  alt="thumbnail"
+                />
               ) : (
                 <input
                   type="file"
@@ -219,10 +263,16 @@ function ReleaseCreate() {
                         primaryArtist: e.target.value,
                       })
                     }
+                  ></select>
+
+                  <button
+                    onClick={() =>
+                      setShowArtist({ show: true, name: "primary" })
+                    }
+                    className="btn btn-primary"
                   >
-                    <option value="default">Default</option>
-                  </select>
-                  <button className="btn btn-primary">+</button>
+                    +
+                  </button>
                 </div>
               </div>
               <div>
@@ -240,10 +290,15 @@ function ReleaseCreate() {
                         featuringArtist: e.target.value,
                       })
                     }
+                  ></select>
+                  <button
+                    onClick={() =>
+                      setShowArtist({ show: true, name: "featuring" })
+                    }
+                    className="btn btn-primary"
                   >
-                    <option value="default">Default</option>
-                  </select>
-                  <button className="btn btn-primary">+</button>
+                    +
+                  </button>
                 </div>
               </div>
               <div>
@@ -354,64 +409,30 @@ function ReleaseCreate() {
                 }
               />
               <br />
-              <button className="btn btn-dark form-control">save</button>
+              <button
+                onClick={submitReleaseinfo}
+                className="btn btn-dark form-control"
+              >
+                save
+              </button>
             </div>
           </div>
           <div className=" release-tabs" id="release-tab2">
-            <Song />
-            <Song />
+            {Array.from(Array(Songnum)).map((index) => {
+              return <Song id={Albumid} key={index} />;
+            })}
+            <button
+              onClick={() => Setsongnum(Songnum + 1)}
+              className="btn btn-outline-dark"
+            >
+              Add more
+            </button>
           </div>
           <div className="release-tabs" id="release-tab3">
-            <div className="container">
-              <p>select audio platform</p>
-              <div className="d-flex flex-wrap">
-                <div className="platform-icon">
-                  <input type="checkbox" />
-                  <img
-                    src="https://img.icons8.com/color/452/shazam.png"
-                    alt=""
-                    height="100px"
-                    width="100px"
-                  />
-                </div>
-                <div className="platform-icon">
-                  <input type="checkbox" />
-                  <img
-                    src="https://img.icons8.com/color/452/shazam.png"
-                    alt=""
-                    height="100px"
-                    width="100px"
-                  />
-                </div>
-                <div className="platform-icon">
-                  <input type="checkbox" />
-                  <img
-                    src="https://img.icons8.com/color/452/shazam.png"
-                    alt=""
-                    height="100px"
-                    width="100px"
-                  />
-                </div>
-                <div className="platform-icon">
-                  <input type="checkbox" />
-                  <img
-                    src="https://img.icons8.com/color/452/shazam.png"
-                    alt=""
-                    height="100px"
-                    width="100px"
-                  />
-                </div>
-              </div>
-              <div className="container text-center">
-                <button className="btn btn-outline-dark">submit</button>
-              </div>
-            </div>
+            <Platform />
           </div>
           <div className="release-tabs" id="release-tab4">
-            <div className="col ">
-              <p>song info</p>
-              <button className="btn btn-dark">Submit</button>
-            </div>
+            <SongInfo Albumid={Albumid} />
           </div>
         </div>
       </div>

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import SongDetails from "./SongDetails";
 
-function Song() {
+function Song({ albumid }) {
   const [showSongdetails, setshowSongdetails] = useState(false);
 
   return (
     <div className="col m-2 p-2 text-center">
-      {showSongdetails ? <SongDetails close={setshowSongdetails} /> : null}
+      {showSongdetails ? (
+        <SongDetails albumId={albumid} close={setshowSongdetails} />
+      ) : null}
 
       <label className="text-muted" htmlFor="song">
         select audio asset
