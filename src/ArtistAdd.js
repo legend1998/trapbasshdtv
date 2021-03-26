@@ -1,9 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { firedb } from "./firebaseConfig";
+import { useStateValue } from "./StateProvider";
+
 
 function ArtistAdd({ artist, setclose }) {
-  const [Singer, setSinger] = useState({});
+
+  const [{user}] = useStateValue();
+  const [Singer, setSinger] = useState({user:user.email});
 
   const close = () => {
     setclose(false);
@@ -15,8 +19,8 @@ function ArtistAdd({ artist, setclose }) {
       return;
     }
     firedb
-      .collection("artistPrimary")
-      .add({ Singer })
+      .collection(`${artist}artist`)
+      .add( Singer )
       .then((doc) => {
         alert(`${artist} artist added `);
       })

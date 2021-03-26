@@ -2,13 +2,11 @@ import React from "react";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useState } from "react";
 import { firedb } from "./firebaseConfig";
+import { useEffect } from "react";
 
-function SongDetails({ close, albumId }) {
+function SongDetails({ close, albumId, songId }) {
   const [Song, setSong] = useState({});
-
-  const closetab = () => {
-    close(false);
-  };
+  const [genre, setgenre] = useState([]);
 
   const updatesongDetails = () => {
     if (Object.keys(Song).length < 20) {
@@ -19,19 +17,42 @@ function SongDetails({ close, albumId }) {
       .collection("album")
       .doc(albumId)
       .collection("song")
-      .add(Song)
+      .doc(songId)
+      .update(Song)
       .then((doc) => {
-        alert("added details.");
+        console.log(doc.data());
       })
       .catch((e) => {
-        alert(e);
+        console.log(e);
       });
   };
+
+  useEffect(() => {
+    firedb.collection("genre").onSnapshot((snapshot) => {
+      var a = [];
+      snapshot.forEach((snap) => {
+        a.push(snap.data());
+      });
+      setgenre(a);
+    });
+  }, []);
+
+  if (!songId) {
+    return (
+      <div className="song-detail-container " id="song-detail-container">
+        <div className="song-detail text-center">
+          <CancelIcon className="cancelbutton" onClick={() => close(false)} />
+
+          <h4>first upload music file to edit details here please.</h4>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="song-detail-container " id="song-detail-container">
       <div className="song-detail text-left">
-        <CancelIcon className="cancelbutton" onClick={closetab} />
+        <CancelIcon className="cancelbutton" onClick={() => close(false)} />
         <p>Add Details</p>
         <div>
           <p className="text-muted">
@@ -107,31 +128,25 @@ function SongDetails({ close, albumId }) {
             Primary Artist<span className="required-span">*</span>
           </p>
           <div className="d-flex">
-            <select
+            <input
               name="primaryArtist"
-              id=""
               className="form-control"
               onChange={(e) =>
                 setSong({ ...Song, primaryArtist: e.target.value })
               }
-            >
-              <option value="default">Default</option>
-            </select>
+            />
           </div>
         </div>
         <div>
           <p className="text-muted">Featuring Artist</p>
           <div className="d-flex">
-            <select
+            <input
               name="featuringartist"
-              id=""
               className="form-control"
               onChange={(e) =>
                 setSong({ ...Song, featuringArtist: e.target.value })
               }
-            >
-              <option value="default">Default</option>
-            </select>
+            />
           </div>
         </div>
         <div>
@@ -179,11 +194,10 @@ function SongDetails({ close, albumId }) {
             Production year <span className="required-span">*</span>
           </p>
           <input
-            type="year"
-            placeholder="production year "
-            onChange={(e) =>
-              setSong({ ...Song, productionYear: e.target.value })
-            }
+            type="number"
+            min="2020"
+            max="2099"
+            onChange={(e) => setSong({ ...Song, prodYear: e.target.value })}
           />
         </div>
         <div>
@@ -232,7 +246,14 @@ function SongDetails({ close, albumId }) {
             id=""
             onChange={(e) => setSong({ ...Song, genre: e.target.value })}
           >
-            <option value="default"></option>
+            <option value="default" selected>
+              select
+            </option>
+            {genre.map((g, index) => (
+              <option key={index} value={g.name}>
+                {g.name}{" "}
+              </option>
+            ))}
           </select>
         </div>
         <div>
@@ -361,7 +382,10 @@ function SongDetails({ close, albumId }) {
           >
             Save
           </button>
-          <button onClick={closetab} className="btn btn-outline-danger">
+          <button
+            onClick={() => close(false)}
+            className="btn btn-outline-danger"
+          >
             Close
           </button>
         </div>

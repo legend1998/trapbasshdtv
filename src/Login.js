@@ -1,24 +1,32 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { auth } from "./firebaseConfig";
+import { Link, useHistory } from "react-router-dom";
+import { auth, firedb } from "./firebaseConfig";
 import { useStateValue } from "./StateProvider";
 
 function Login() {
   const [User, setUser] = useState({ email: null, password: null });
-  const [{ user }, dispatch] = useStateValue();
+  const [{}, dispatch] = useStateValue();
+  const history = useHistory();
   const login = () => {
-    auth
-      .signInWithEmailAndPassword(User.email, User.password)
+    firedb
+      .collection("user")
+      .doc(User.email)
+      .get()
       .then((doc) => {
-        dispatch({
-          type: "SET_USER",
-          user: doc.user,
-        });
-        localStorage.setItem("user", doc.user);
-      })
-      .catch((e) => {
-        alert(e.message);
+        console.log(doc.data());
+        auth
+          .signInWithEmailAndPassword(User.email, User.password)
+          .then(() => {
+            history.replace("/panel");
+            dispatch({
+              type: "SET_USER",
+              user: doc.data(),
+            });
+          })
+          .catch((e) => {
+            alert(e.message);
+          });
       });
   };
   return (
@@ -35,11 +43,13 @@ function Login() {
           <input
             type="text"
             className="input-field mt-2"
+            name="username"
             placeholder="username or email"
             onChange={(e) => setUser({ ...User, email: e.target.value })}
           />
           <input
             type="password"
+            name="password"
             className="input-field mt-2"
             placeholder="password"
             onChange={(e) => setUser({ ...User, password: e.target.value })}

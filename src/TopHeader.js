@@ -1,11 +1,9 @@
-function TopHeader({ heading }) {
-  return (
-    <div className="topheader" id="topheader">
-      <nav className="navbar navbar-expand navbar-dark bg-light justify-content-start text-dark topheader-text">
-        <h2 className="fs-1">{heading}</h2>
-      </nav>
-    </div>
-  );
-}
+  function TopHeader({ heading }) {
+    return (
+      <div className="topheader bg-light" id="topheader">
+          <h2 className="fs-1">{heading}</h2>
+      </div>
+    );
+  }
 
-export default TopHeader;
+  export default TopHeader;

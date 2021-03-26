@@ -2,18 +2,26 @@ import TopHeader from "./TopHeader";
 import CopyrightIcon from "@material-ui/icons/Copyright";
 import Song from "./Song";
 import { firedb, firestorage } from "./firebaseConfig";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ArtistAdd from "./ArtistAdd";
 import Platform from "./Platform";
 import SongInfo from "./SongInfo";
+import placeholder from "./placeholder.png";
+import { useStateValue } from "./StateProvider";
 
 function ReleaseCreate() {
+  const [{ user }] = useStateValue();
   const [SongDetail, setSongDetail] = useState({});
   const [Albumid, setAlbumid] = useState(false);
   const [Songnum, Setsongnum] = useState(1);
+  const [artist, setartist] = useState([]);
+  const [fartist, setfartist] = useState([]);
+  const [genre, setgenre] = useState([]);
+  const [tab,setTab] = useState(1);
   const [showArtist, setShowArtist] = useState({ show: false, name: "" });
 
   const submitReleaseinfo = async () => {
+    console.log(SongDetail);
     if (Object.keys(SongDetail).length < 12) {
       alert("please fill complete details.");
       return;
@@ -27,6 +35,7 @@ function ReleaseCreate() {
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
         setAlbumid(docRef.id);
+        setTab(2);
         toggler(tab2, true);
       })
       .catch((error) => {
@@ -55,7 +64,6 @@ function ReleaseCreate() {
           });
       });
   };
-  console.log(SongDetail);
 
   const toggler = (e, clickcall = false) => {
     var tab = clickcall ? e : e.currentTarget;
@@ -109,6 +117,38 @@ function ReleaseCreate() {
         break;
     }
   };
+
+  useEffect(() => {
+    firedb.collection("primaryartist").onSnapshot((snapshot) => {
+      var a = [];
+      snapshot.forEach((snap) => {
+        var data = snap.data();
+        if (data.user === user.email) {
+          a.push(data);
+        }
+      });
+      setartist(a);
+    });
+
+    firedb.collection("featuringartist").onSnapshot((snapshot) => {
+      var a = [];
+      snapshot.forEach((snap) => {
+        var data = snap.data();
+        if (data.user === user.email) {
+          a.push(data);
+        }
+      });
+      setfartist(a);
+    });
+
+    firedb.collection("genre").onSnapshot((snapshot) => {
+      var a = [];
+      snapshot.forEach((snap) => {
+        a.push(snap.data());
+      });
+      setgenre(a);
+    });
+  }, [user.email]);
 
   return (
     <div className="release-create col-sm p-0">
@@ -164,11 +204,19 @@ function ReleaseCreate() {
                   alt="thumbnail"
                 />
               ) : (
-                <input
-                  type="file"
-                  className="btn file-input custom-file-input"
-                  onChange={(e) => imageupload(e)}
-                />
+                <div className="file-body">
+                  <label htmlFor="file-for">
+                    <div className="file-button">
+                      <img src={placeholder} alt="" width="220px" />
+                    </div>
+                  </label>
+                  <input
+                    type="file"
+                    id="file-for"
+                    className="file-for"
+                    onChange={(e) => imageupload(e)}
+                  />
+                </div>
               )}
               <p>Artwork guidelines</p>
             </div>
@@ -263,7 +311,13 @@ function ReleaseCreate() {
                         primaryArtist: e.target.value,
                       })
                     }
-                  ></select>
+                  >
+                    {artist.map((art, index) => (
+                      <option key={index} value={art.name}>
+                        {art.name}
+                      </option>
+                    ))}
+                  </select>
 
                   <button
                     onClick={() =>
@@ -290,7 +344,16 @@ function ReleaseCreate() {
                         featuringArtist: e.target.value,
                       })
                     }
-                  ></select>
+                  >
+                    <option value="default" default>
+                      select
+                    </option>
+                    {fartist.map((art, index) => (
+                      <option key={index} value={art.name}>
+                        {art.name}
+                      </option>
+                    ))}
+                  </select>
                   <button
                     onClick={() =>
                       setShowArtist({ show: true, name: "featuring" })
@@ -306,8 +369,6 @@ function ReleaseCreate() {
                   Genre<span className="required-span">*</span>
                 </p>
                 <select
-                  name="featuringArtist"
-                  id=""
                   className="form-control"
                   onChange={(e) =>
                     setSongDetail({
@@ -317,6 +378,9 @@ function ReleaseCreate() {
                   }
                 >
                   <option value="default">Default</option>
+                  {genre.map((g) => (
+                    <option>{g.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -432,7 +496,7 @@ function ReleaseCreate() {
             <Platform />
           </div>
           <div className="release-tabs" id="release-tab4">
-            <SongInfo Albumid={Albumid} />
+             {Albumid && tab===4?<SongInfo Albumid={Albumid}/>:null} 
           </div>
         </div>
       </div>

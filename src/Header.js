@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import HomeIcon from "@material-ui/icons/Home";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import NewReleasesIcon from "@material-ui/icons/NewReleases";
@@ -8,10 +8,13 @@ import ConfirmationNumberIcon from "@material-ui/icons/ConfirmationNumber";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { auth } from "./firebaseConfig";
 import { useStateValue } from "./StateProvider";
 
 function Header() {
-  const [dispatch] = useStateValue();
+  let url = "/panel";
+  const history = useHistory();
+  const [{}, dispatch] = useStateValue();
   const toggler = (e) => {
     var nav = document.getElementById("sidebar-nav").childNodes;
     nav.forEach((element) => {
@@ -28,18 +31,34 @@ function Header() {
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
-    dispatch({ type: "DELETE_USER" });
+    auth.signOut();
+    dispatch({
+      type: "DELETE_USER",
+    });
   };
+
+  var style = {
+    cursor: {
+      cursor: "pointer",
+    },
+    logoposition: {
+      "margin-left": "30px",
+      top: "30px",
+      border: "1px solid red",
+    },
+  };
+
   return (
-    <div className="side-header col-sm-2" id="sidebar">
+    <div className="side-header col-sm-2 m-0 p-0" id="sidebar">
       <div className="header-box text-light">
         <div className="logo-side_header d-flex align-items-center justify-content-around ">
-          <img
-            id="logoside"
-            src="https://app.fronicmedia.com/static/media/Fronic_Logo_white.27f34786.png"
-            alt=""
-          />
+          <Link to="/">
+            <img
+              id="logoside"
+              src="https://app.fronicmedia.com/static/media/Fronic_Logo_white.27f34786.png"
+              alt=""
+            />
+          </Link>
         </div>
         <div className="logout" id="logout">
           <CancelIcon onClick={close} />
@@ -61,34 +80,42 @@ function Header() {
         </div>
         <div className="navigation mt-4">
           <div className="navbar-nav sidebar-nav " id="sidebar-nav">
-            <Link to="/" className="active   " onClick={(e) => toggler(e)}>
+            <Link
+              to={`${url}/dashboard`}
+              className="active"
+              onClick={(e) => toggler(e)}
+            >
               <HomeIcon className="navitem" />
               DashBoard
             </Link>
-            <Link to="catalog" onClick={(e) => toggler(e)}>
+            <Link to={`${url}/catalog`} onClick={(e) => toggler(e)}>
               <LibraryMusicIcon className="navitem" />
               Catalog
             </Link>
-            <Link to="createrelease" onClick={(e) => toggler(e)}>
+            <Link to={`${url}/releasecreate`} onClick={(e) => toggler(e)}>
               <NewReleasesIcon className="navitem" />
               Create Release
             </Link>
-            <Link to="reports" onClick={(e) => toggler(e)}>
+            <Link to={`${url}/payouts`} onClick={(e) => toggler(e)}>
               <ReportIcon className="navitem" />
               Poyouts
             </Link>
-            <Link to="tickets" onClick={(e) => toggler(e)}>
+            <Link to={`${url}/tickets`} onClick={(e) => toggler(e)}>
               <ConfirmationNumberIcon className="navitem" />
               Tickets
             </Link>
-            <Link to="withdrawel" onClick={(e) => toggler(e)}>
+            <Link to={`${url}/profile`} onClick={(e) => toggler(e)}>
               <MonetizationOnIcon className="navitem" />
               My Profile
             </Link>
-            <a onClick={logoutpopup}>
+            <span
+              className="p-3 text-light "
+              onClick={logoutpopup}
+              style={style.cursor}
+            >
               <ExitToAppIcon className="navitem" />
               Log out
-            </a>
+            </span>
           </div>
         </div>
       </div>

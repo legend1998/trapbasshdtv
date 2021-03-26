@@ -1,23 +1,38 @@
 import React from "react";
 import { useState } from "react";
-import { auth } from "./firebaseConfig";
+import { useHistory } from "react-router";
+import { auth, firedb } from "./firebaseConfig";
 import { useStateValue } from "./StateProvider";
 
 function Signup() {
   const [User, setUser] = useState({ email: null, password: null });
   const [dispatch] = useStateValue();
+  const history = useHistory();
   const signup = () => {
-    auth
-      .createUserWithEmailAndPassword(User.email, User.password)
+    if (
+      Object.keys(User).length < 4 ||
+      User.phone.length < 10 ||
+      User.name.length < 4
+    ) {
+      alert("fill details carefully");
+      return;
+    }
+    firedb
+      .collection("user")
+      .doc(User.email)
+      .set({ email: User.email, phone: User.phone, name: User.name })
       .then((doc) => {
-        dispatch({
-          type: "SET_USER",
-          user: doc.user,
-        });
-        localStorage.setItem("user", doc.user);
+        auth
+          .createUserWithEmailAndPassword(User.email, User.password)
+          .then(() => {
+            history.replace("/login");
+          })
+          .catch((e) => {
+            alert(e);
+          });
       })
       .catch((e) => {
-        alert(e.message);
+        alert("error", e);
       });
   };
 
@@ -35,8 +50,20 @@ function Signup() {
           <input
             type="text"
             className="input-field mt-2"
-            placeholder="username or email"
+            placeholder="email"
             onChange={(e) => setUser({ ...User, email: e.target.value })}
+          />
+          <input
+            type="text"
+            className="input-field mt-2"
+            placeholder="name "
+            onChange={(e) => setUser({ ...User, name: e.target.value })}
+          />
+          <input
+            type="text"
+            className="input-field mt-2"
+            placeholder="phone"
+            onChange={(e) => setUser({ ...User, phone: e.target.value })}
           />
           <input
             type="password"
