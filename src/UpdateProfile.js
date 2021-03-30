@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { auth, firedb } from "./firebaseConfig";
+import { firedb } from "./firebaseConfig";
 import { useStateValue } from "./StateProvider";
 
 function UpdateProfile({ close }) {
@@ -8,39 +8,30 @@ function UpdateProfile({ close }) {
   const [profile, setprofile] = useState({});
 
   const updateprofile = () => {
+    if (profile.phone.length !== 10) {
+      alert("enter valid phone number");
+      return;
+    }
     firedb
       .collection("user")
-      .where("email", "==", user.email)
-      .limit(1)
-      .onSnapshot((snapshot) => {
-        console.log(snapshot.docs);
-        firedb
-          .collection("user")
-          .doc(snapshot.docs[0].ref.id)
-          .update({
-            profile,
-          })
-          .then((doc) => {
-            alert("succss");
-          })
-          .catch((e) => {
-            alert("can't update right now");
-          });
+      .doc(user.email)
+      .update(profile)
+      .then((doc) => {
+        console.log(doc);
+        localStorage.clear();
+        dispatch({
+          type: "SET_USER",
+          user: doc.data(),
+        });
+        alert("succss relogin to update.");
+      })
+      .catch((e) => {
+        alert(e);
       });
   };
   return (
     <div className="song-detail-container">
       <div className="song-detail">
-        <p className="text-muted">display name</p>
-        <input
-          type="text"
-          placeholder="john doe"
-          className="form-control"
-          onChange={(e) =>
-            setprofile({ ...profile, displayName: e.target.value })
-          }
-          required
-        />
         <p className="text-muted">phone Number</p>
         <input
           type="number"
@@ -48,14 +39,6 @@ function UpdateProfile({ close }) {
           onChange={(e) => setprofile({ ...profile, phone: e.target.value })}
           required
         />
-        <p className="text-muted">photo url</p>
-        <input
-          type="text"
-          className="form-control"
-          onChange={(e) => setprofile({ ...profile, photo: e.target.value })}
-          required
-        />
-
         <button className="btn btn-outline-success" onClick={updateprofile}>
           update
         </button>

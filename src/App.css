@@ -4,10 +4,6 @@
   height: 100vh;
 }
 
-.App {
-  width: 100%;
-}
-
 .login-form-div {
   width: 350px;
   border-radius: 5px;
@@ -66,7 +62,7 @@
   transition: 200ms;
   font-size: 12px;
   height: 45px;
-  padding-left: 12px;
+  padding-left: 30px;
   display: flex;
   word-break: keep-all;
   flex-direction: row;
@@ -74,7 +70,7 @@
 }
 
 .disabled {
-  color: rgb(236, 228, 228);
+  color: #ece4e4;
   background-color: rgb(184, 178, 178);
 }
 .active {
@@ -82,6 +78,9 @@
 }
 .navitem {
   margin-right: 20px;
+}
+.form-control {
+  text-transform: capitalize;
 }
 
 .release {
@@ -95,7 +94,6 @@
 }
 .release li {
   padding: 10px 20px 10px;
-  border-radius: 3px;
   transition: 200ms;
 }
 .required-span {
@@ -127,11 +125,6 @@
   padding: 0 5px 2px;
   cursor: pointer;
 }
-
-.release-tabs {
-  display: none;
-}
-
 .song-detail,
 .artist-container {
   width: 450px;
@@ -215,22 +208,17 @@
 
 .mobileheader {
   display: block;
-  min-width: 60px;
   z-index: 100;
 }
+
 .menuicon {
   height: 40px;
   cursor: pointer;
   padding-left: 10px;
 }
 
-#mobile-nav {
-  display: none;
-}
-
 #mobile-nav > a {
   text-decoration: none;
-  width: 100%;
   color: white;
   border: 1px solid rgb(51, 51, 51);
   height: 50px;
@@ -263,7 +251,7 @@ textarea {
 }
 
 .row {
-  width: inherit;
+  width: 100%;
 }
 
 .file-for {
@@ -334,4 +322,12 @@ header {
 
 .footer-area:hover {
   background-position: left;
+}
+
+#itemTab > span {
+  padding-top: 10px;
+  height: 40px;
+  cursor: pointer;
+  color: #888;
+  transition: 200ms;
 }

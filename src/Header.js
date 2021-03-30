@@ -10,18 +10,13 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { auth } from "./firebaseConfig";
 import { useStateValue } from "./StateProvider";
+import { useState } from "react";
 
 function Header() {
   let url = "/panel";
-  const history = useHistory();
   const [{}, dispatch] = useStateValue();
-  const toggler = (e) => {
-    var nav = document.getElementById("sidebar-nav").childNodes;
-    nav.forEach((element) => {
-      element.classList.remove("active");
-    });
-    e.currentTarget.classList.add("active");
-  };
+  const [tab, settab] = useState(1);
+  const history = useHistory();
 
   const logoutpopup = () => {
     document.getElementById("logout").style.display = "block";
@@ -35,16 +30,24 @@ function Header() {
     dispatch({
       type: "DELETE_USER",
     });
+    history.push("/");
   };
 
   var style = {
     cursor: {
       cursor: "pointer",
+      paddingLeft: "30px",
+      fontSize: "12px",
     },
     logoposition: {
       "margin-left": "30px",
       top: "30px",
       border: "1px solid red",
+    },
+    active: {
+      background:
+        "linear-gradient(90deg, rgb(180, 104, 224), rgb(228, 99, 196))",
+      color: "white",
     },
   };
 
@@ -82,34 +85,54 @@ function Header() {
           <div className="navbar-nav sidebar-nav " id="sidebar-nav">
             <Link
               to={`${url}/dashboard`}
-              className="active"
-              onClick={(e) => toggler(e)}
+              style={tab === 1 ? style.active : null}
+              onClick={() => settab(1)}
             >
               <HomeIcon className="navitem" />
               DashBoard
             </Link>
-            <Link to={`${url}/catalog`} onClick={(e) => toggler(e)}>
+            <Link
+              to={`${url}/catalog`}
+              style={tab === 2 ? style.active : null}
+              onClick={() => settab(2)}
+            >
               <LibraryMusicIcon className="navitem" />
               Catalog
             </Link>
-            <Link to={`${url}/releasecreate`} onClick={(e) => toggler(e)}>
+            <Link
+              to={`${url}/createrelease`}
+              style={tab === 3 ? style.active : null}
+              onClick={() => settab(3)}
+            >
               <NewReleasesIcon className="navitem" />
               Create Release
             </Link>
-            <Link to={`${url}/payouts`} onClick={(e) => toggler(e)}>
+            <Link
+              to={`${url}/payouts`}
+              style={tab === 4 ? style.active : null}
+              onClick={() => settab(4)}
+            >
               <ReportIcon className="navitem" />
               Poyouts
             </Link>
-            <Link to={`${url}/tickets`} onClick={(e) => toggler(e)}>
+            <Link
+              to={`${url}/tickets`}
+              style={tab === 5 ? style.active : null}
+              onClick={() => settab(5)}
+            >
               <ConfirmationNumberIcon className="navitem" />
               Tickets
             </Link>
-            <Link to={`${url}/profile`} onClick={(e) => toggler(e)}>
+            <Link
+              to={`${url}/profile`}
+              style={tab === 6 ? style.active : null}
+              onClick={() => settab(6)}
+            >
               <MonetizationOnIcon className="navitem" />
               My Profile
             </Link>
             <span
-              className="p-3 text-light "
+              className=" text-light "
               onClick={logoutpopup}
               style={style.cursor}
             >

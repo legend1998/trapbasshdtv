@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import { auth, firedb } from "./firebaseConfig";
 import { useStateValue } from "./StateProvider";
 
@@ -80,6 +81,7 @@ function Signup() {
             Sign up
           </button>
         </form>
+        <Link to="/login">already have an id login here</Link>
       </div>
     </div>
   );

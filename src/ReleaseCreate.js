@@ -11,14 +11,19 @@ import { useStateValue } from "./StateProvider";
 
 function ReleaseCreate() {
   const [{ user }] = useStateValue();
-  const [SongDetail, setSongDetail] = useState({});
+  const [allow, setallow] = useState([1]);
+
+  const [toggle, settoggle] = useState(1);
+
+  const [SongDetail, setSongDetail] = useState({ email: user.email });
   const [Albumid, setAlbumid] = useState(false);
   const [Songnum, Setsongnum] = useState(1);
   const [artist, setartist] = useState([]);
   const [fartist, setfartist] = useState([]);
   const [genre, setgenre] = useState([]);
-  const [tab,setTab] = useState(1);
   const [showArtist, setShowArtist] = useState({ show: false, name: "" });
+
+  console.log(Albumid);
 
   const submitReleaseinfo = async () => {
     console.log(SongDetail);
@@ -26,24 +31,21 @@ function ReleaseCreate() {
       alert("please fill complete details.");
       return;
     }
-    var tab2 = document.getElementsByName("2")[0];
-    tab2.classList.remove("disabled");
-
     firedb
       .collection("album")
       .add(SongDetail)
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
         setAlbumid(docRef.id);
-        setTab(2);
-        toggler(tab2, true);
+        setallow([...allow, 2]);
+        settoggle(2);
       })
       .catch((error) => {
         console.error("Error adding document: ", error);
         alert(error);
       });
   };
-
+  console.log(toggle, allow);
   const imageupload = (e) => {
     var image = e.target.files[0];
     if (!image) return;
@@ -63,59 +65,6 @@ function ReleaseCreate() {
             console.log(err);
           });
       });
-  };
-
-  const toggler = (e, clickcall = false) => {
-    var tab = clickcall ? e : e.currentTarget;
-    console.log(tab);
-
-    if (tab.classList.contains("disabled")) {
-      return;
-    }
-
-    var nav = document.getElementById("release-nav").childNodes;
-
-    nav.forEach((element) => {
-      element.classList.remove("tabactive");
-    });
-
-    tab.classList.add("tabactive");
-
-    var tabs = document.getElementById("releasetab-container").childNodes;
-
-    switch (tab.getAttribute("name")) {
-      case "1": {
-        tabs.forEach((element) => {
-          element.style.display = "none";
-        });
-        document.getElementById("release-tab1").style.display = "flex";
-
-        break;
-      }
-      case "2": {
-        tabs.forEach((element) => {
-          element.style.display = "none";
-        });
-        document.getElementById("release-tab2").style.display = "block";
-        break;
-      }
-      case "3": {
-        tabs.forEach((element) => {
-          element.style.display = "none";
-        });
-        document.getElementById("release-tab3").style.display = "block";
-        break;
-      }
-      case "4": {
-        tabs.forEach((element) => {
-          element.style.display = "none";
-        });
-        document.getElementById("release-tab4").style.display = "block";
-        break;
-      }
-      default:
-        break;
-    }
   };
 
   useEffect(() => {
@@ -150,6 +99,14 @@ function ReleaseCreate() {
     });
   }, [user.email]);
 
+  const style = {
+    active: {
+      backgroundColor: "#c0c0f8",
+      color: "black",
+    },
+    display: toggle === 1 ? "block" : "hidden",
+  };
+
   return (
     <div className="release-create col-sm p-0">
       <div className="top-header-container ">
@@ -158,34 +115,42 @@ function ReleaseCreate() {
       <div className="container-fluid">
         <div className="container-fluid">
           <ul
-            className="navbar-nav release d-flex flex-row align-items-center justify-content-end"
+            className="navbar-nav d-flex flex-row justify-content-center release"
             id="release-nav"
           >
             <li
-              className="nav-item tabactive"
-              onClick={(e) => toggler(e)}
-              name="1"
+              className="nav-item flex-fill"
+              style={toggle === 1 ? style.active : null}
+              onClick={() => {
+                settoggle(1);
+              }}
             >
               <span>Release Info</span>
             </li>
             <li
-              className="nav-item disabled"
-              onClick={(e) => toggler(e)}
-              name="2"
+              className="nav-item disabled flex-fill"
+              style={toggle === 2 ? style.active : null}
+              onClick={(e) => {
+                if (2 in allow) settoggle(2);
+              }}
             >
               <span>Song Info</span>
             </li>
             <li
-              className="nav-item disabled"
-              onClick={(e) => toggler(e)}
-              name="3"
+              className="nav-item disabled flex-fill"
+              style={toggle === 3 ? style.active : null}
+              onClick={(e) => {
+                if (3 in allow) settoggle(3);
+              }}
             >
               <span>Platform</span>
             </li>
             <li
-              className="nav-item disabled"
-              onClick={(e) => toggler(e)}
-              name="4"
+              className="nav-item disabled flex-fill"
+              style={toggle === 4 ? style.active : null}
+              onClick={(e) => {
+                settoggle(4);
+              }}
             >
               <span>Submission</span>
             </li>
@@ -195,309 +160,326 @@ function ReleaseCreate() {
           <ArtistAdd artist={showArtist.name} setclose={setShowArtist} />
         ) : null}
         <div className="" id="releasetab-container">
-          <div className=" row  mt-4 " id="release-tab1">
-            <div className="col d-flex align-items-center justify-content-center flex-column">
-              {SongDetail?.thumbnail ? (
-                <img
-                  src={SongDetail?.thumbnail}
-                  width="150px"
-                  alt="thumbnail"
-                />
-              ) : (
-                <div className="file-body">
-                  <label htmlFor="file-for">
-                    <div className="file-button">
-                      <img src={placeholder} alt="" width="220px" />
-                    </div>
-                  </label>
-                  <input
-                    type="file"
-                    id="file-for"
-                    className="file-for"
-                    onChange={(e) => imageupload(e)}
+          {toggle === 1 ? (
+            <div className=" row  mt-4 " id="release-tab1">
+              <div className="col d-flex align-items-center justify-content-center flex-column">
+                {SongDetail?.thumbnail ? (
+                  <img
+                    src={SongDetail?.thumbnail}
+                    width="150px"
+                    alt="thumbnail"
                   />
-                </div>
-              )}
-              <p>Artwork guidelines</p>
-            </div>
-            <div className="col">
-              <div>
-                <p className="text-muted ">
-                  Release Type <span className="required-span">*</span>
-                </p>
-                <div className="d-flex align-items-center justify-content-around release-type">
-                  <label>
+                ) : (
+                  <div className="file-body">
+                    <label htmlFor="file-for">
+                      <div className="file-button">
+                        <img src={placeholder} alt="" width="220px" />
+                      </div>
+                    </label>
                     <input
-                      type="radio"
-                      name="release-type"
-                      id=""
-                      value="EP"
-                      onChange={(e) =>
-                        setSongDetail({
-                          ...SongDetail,
-                          releaseType: e.target.value,
-                        })
-                      }
+                      type="file"
+                      id="file-for"
+                      className="file-for"
+                      onChange={(e) => imageupload(e)}
                     />
-                    Ep
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="release-type"
-                      id=""
-                      value="Single"
-                      onChange={(e) =>
-                        setSongDetail({
-                          ...SongDetail,
-                          releaseType: e.target.value,
-                        })
-                      }
-                    />
-                    Single
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="release-type"
-                      id=""
-                      value="Album"
-                      onChange={(e) =>
-                        setSongDetail({
-                          ...SongDetail,
-                          releaseType: e.target.value,
-                        })
-                      }
-                    />
-                    Album
-                  </label>
-                </div>
+                  </div>
+                )}
+                <p>Artwork guidelines</p>
               </div>
-              <div className="">
-                <label
-                  htmlFor="releaseTitle"
-                  required
-                  className="d-flex flex-column"
-                >
+              <div className="col">
+                <div>
+                  <p className="text-muted ">
+                    Release Type <span className="required-span">*</span>
+                  </p>
+                  <div className="d-flex align-items-center justify-content-around release-type">
+                    <label>
+                      <input
+                        type="radio"
+                        name="release-type"
+                        id=""
+                        value="EP"
+                        onChange={(e) =>
+                          setSongDetail({
+                            ...SongDetail,
+                            releaseType: e.target.value,
+                          })
+                        }
+                      />
+                      Ep
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="release-type"
+                        id=""
+                        value="Single"
+                        onChange={(e) =>
+                          setSongDetail({
+                            ...SongDetail,
+                            releaseType: e.target.value,
+                          })
+                        }
+                      />
+                      Single
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="release-type"
+                        id=""
+                        value="Album"
+                        onChange={(e) =>
+                          setSongDetail({
+                            ...SongDetail,
+                            releaseType: e.target.value,
+                          })
+                        }
+                      />
+                      Album
+                    </label>
+                  </div>
+                </div>
+                <div className="">
+                  <label
+                    htmlFor="releaseTitle"
+                    required
+                    className="d-flex flex-column"
+                  >
+                    <p className="text-muted">
+                      Release Title<span className="required-span">*</span>
+                    </p>
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="release Title"
+                      name="releaseTitle"
+                      onChange={(e) =>
+                        setSongDetail({
+                          ...SongDetail,
+                          releaseTitle: e.target.value,
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div>
                   <p className="text-muted">
-                    Release Title<span className="required-span">*</span>
+                    Primary Artist<span className="required-span">*</span>
+                  </p>
+                  <div className="d-flex">
+                    <select
+                      name="primaryArtist"
+                      id=""
+                      className="form-control"
+                      onChange={(e) =>
+                        setSongDetail({
+                          ...SongDetail,
+                          primaryArtist: e.target.value,
+                        })
+                      }
+                    >
+                      {artist.map((art, index) => (
+                        <option key={index} value={art.name}>
+                          {art.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      onClick={() =>
+                        setShowArtist({ show: true, name: "primary" })
+                      }
+                      className="btn btn-primary"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-muted">
+                    featuring Artist<span className="required-span">*</span>
+                  </p>
+                  <div className="d-flex">
+                    <select
+                      name="featuringArtist"
+                      id=""
+                      className="form-control"
+                      onChange={(e) =>
+                        setSongDetail({
+                          ...SongDetail,
+                          featuringArtist: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="default" default>
+                        select
+                      </option>
+                      {fartist.map((art, index) => (
+                        <option key={index} value={art.name}>
+                          {art.name}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={() =>
+                        setShowArtist({ show: true, name: "featuring" })
+                      }
+                      className="btn btn-primary"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-muted">
+                    Genre<span className="required-span">*</span>
+                  </p>
+                  <select
+                    className="form-control"
+                    onChange={(e) =>
+                      setSongDetail({
+                        ...SongDetail,
+                        genre: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="default">Default</option>
+                    {genre.map((g, index) => (
+                      <option key={index}>{g.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <p className="text-muted">
+                    Sub Genre<span className="required-span">*</span>
                   </p>
                   <input
+                    type="text "
+                    placeholder="Sub genre"
                     className="form-control"
-                    type="text"
-                    placeholder="release Title"
-                    name="releaseTitle"
                     onChange={(e) =>
                       setSongDetail({
                         ...SongDetail,
-                        releaseTitle: e.target.value,
+                        subGenre: e.target.value,
                       })
                     }
                   />
-                </label>
-              </div>
-              <div>
-                <p className="text-muted">
-                  Primary Artist<span className="required-span">*</span>
-                </p>
-                <div className="d-flex">
-                  <select
-                    name="primaryArtist"
-                    id=""
-                    className="form-control"
-                    onChange={(e) =>
-                      setSongDetail({
-                        ...SongDetail,
-                        primaryArtist: e.target.value,
-                      })
-                    }
-                  >
-                    {artist.map((art, index) => (
-                      <option key={index} value={art.name}>
-                        {art.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  <button
-                    onClick={() =>
-                      setShowArtist({ show: true, name: "primary" })
-                    }
-                    className="btn btn-primary"
-                  >
-                    +
-                  </button>
                 </div>
               </div>
-              <div>
+              <div className="col">
                 <p className="text-muted">
-                  featuring Artist<span className="required-span">*</span>
-                </p>
-                <div className="d-flex">
-                  <select
-                    name="featuringArtist"
-                    id=""
-                    className="form-control"
-                    onChange={(e) =>
-                      setSongDetail({
-                        ...SongDetail,
-                        featuringArtist: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="default" default>
-                      select
-                    </option>
-                    {fartist.map((art, index) => (
-                      <option key={index} value={art.name}>
-                        {art.name}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={() =>
-                      setShowArtist({ show: true, name: "featuring" })
-                    }
-                    className="btn btn-primary"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-              <div>
-                <p className="text-muted">
-                  Genre<span className="required-span">*</span>
-                </p>
-                <select
-                  className="form-control"
-                  onChange={(e) =>
-                    setSongDetail({
-                      ...SongDetail,
-                      genre: e.target.value,
-                    })
-                  }
-                >
-                  <option value="default">Default</option>
-                  {genre.map((g) => (
-                    <option>{g.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <p className="text-muted">
-                  Sub Genre<span className="required-span">*</span>
+                  Label Name <span className="required-span">*</span>
                 </p>
                 <input
-                  type="text "
-                  placeholder="Sub genre"
+                  type="text"
+                  placeholder="Label Name"
                   className="form-control"
                   onChange={(e) =>
                     setSongDetail({
                       ...SongDetail,
-                      subGenre: e.target.value,
+                      labelName: e.target.value,
                     })
                   }
                 />
+                <p className="text-muted">
+                  Release Date<span className="required-span">*</span> <br />
+                </p>
+                <input
+                  type="date"
+                  placeholder="Release Date"
+                  className="form-control"
+                  onChange={(e) =>
+                    setSongDetail({
+                      ...SongDetail,
+                      releaseDate: e.target.value,
+                    })
+                  }
+                />
+                <p className="text-muted">
+                  pLine<span className="required-span">*</span> <br />
+                </p>
+                <input
+                  type="text"
+                  placeholder="Line"
+                  className="form-control"
+                  onChange={(e) =>
+                    setSongDetail({
+                      ...SongDetail,
+                      pLine: e.target.value,
+                    })
+                  }
+                />
+                <p className="text-muted">
+                  <CopyrightIcon />
+                  Line <span className="required-span">*</span>
+                </p>
+                <input
+                  type="text"
+                  placeholder="Line"
+                  className="form-control"
+                  onChange={(e) =>
+                    setSongDetail({
+                      ...SongDetail,
+                      cLine: e.target.value,
+                    })
+                  }
+                />
+                <p className="text-muted">
+                  UPC/EAN <span className="required-span">*</span>
+                </p>
+                <input
+                  type="text"
+                  placeholder="UPC/EAN"
+                  className="form-control"
+                  onChange={(e) =>
+                    setSongDetail({
+                      ...SongDetail,
+                      upcEan: e.target.value,
+                    })
+                  }
+                />
+                <br />
+                <button
+                  onClick={submitReleaseinfo}
+                  className="btn btn-dark form-control"
+                >
+                  save
+                </button>
               </div>
             </div>
-            <div className="col">
-              <p className="text-muted">
-                Label Name <span className="required-span">*</span>
-              </p>
-              <input
-                type="text"
-                placeholder="Label Name"
-                className="form-control"
-                onChange={(e) =>
-                  setSongDetail({
-                    ...SongDetail,
-                    labelName: e.target.value,
-                  })
-                }
-              />
-              <p className="text-muted">
-                Release Date<span className="required-span">*</span> <br />
-              </p>
-              <input
-                type="date"
-                placeholder="Release Date"
-                className="form-control"
-                onChange={(e) =>
-                  setSongDetail({
-                    ...SongDetail,
-                    releaseDate: e.target.value,
-                  })
-                }
-              />
-              <p className="text-muted">
-                pLine<span className="required-span">*</span> <br />
-              </p>
-              <input
-                type="text"
-                placeholder="Line"
-                className="form-control"
-                onChange={(e) =>
-                  setSongDetail({
-                    ...SongDetail,
-                    pLine: e.target.value,
-                  })
-                }
-              />
-              <p className="text-muted">
-                <CopyrightIcon />
-                Line <span className="required-span">*</span>
-              </p>
-              <input
-                type="text"
-                placeholder="Line"
-                className="form-control"
-                onChange={(e) =>
-                  setSongDetail({
-                    ...SongDetail,
-                    cLine: e.target.value,
-                  })
-                }
-              />
-              <p className="text-muted">
-                UPC/EAN <span className="required-span">*</span>
-              </p>
-              <input
-                type="text"
-                placeholder="UPC/EAN"
-                className="form-control"
-                onChange={(e) =>
-                  setSongDetail({
-                    ...SongDetail,
-                    upcEan: e.target.value,
-                  })
-                }
-              />
-              <br />
+          ) : null}
+          {toggle === 2 ? (
+            <div className=" release-tabs" id="release-tab2">
+              {Array.from(Array(Songnum)).map((index) => {
+                return <Song id={Albumid} key={index} />;
+              })}
               <button
-                onClick={submitReleaseinfo}
-                className="btn btn-dark form-control"
+                onClick={() => Setsongnum(Songnum + 1)}
+                className="btn btn-outline-dark"
               >
-                save
+                Add more
+              </button>
+              <button
+                className="btn btn-success"
+                onClick={() => {
+                  setallow([...allow, 3]);
+                  settoggle(3);
+                }}
+              >
+                Proceed
               </button>
             </div>
-          </div>
-          <div className=" release-tabs" id="release-tab2">
-            {Array.from(Array(Songnum)).map((index) => {
-              return <Song id={Albumid} key={index} />;
-            })}
-            <button
-              onClick={() => Setsongnum(Songnum + 1)}
-              className="btn btn-outline-dark"
-            >
-              Add more
-            </button>
-          </div>
-          <div className="release-tabs" id="release-tab3">
-            <Platform />
-          </div>
-          <div className="release-tabs" id="release-tab4">
-             {Albumid && tab===4?<SongInfo Albumid={Albumid}/>:null} 
-          </div>
+          ) : null}
+          {toggle === 3 ? (
+            <div className="release-tabs" id="release-tab3">
+              <Platform allow={setallow} toggle={settoggle} />
+            </div>
+          ) : null}
+          {toggle === 4 ? (
+            <div className="release-tabs" id="release-tab4">
+              {Albumid ? <SongInfo Albumid={Albumid} /> : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

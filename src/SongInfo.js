@@ -14,10 +14,18 @@ function SongInfo({ Albumid }) {
         .doc(Albumid)
         .collection()
         .onSnapshot((snapshot) => {
-          setsongs.length(snapshot.docs);
+          var a = [];
+          snapshot.docs.forEach((doc) => {
+            var data = doc.data();
+            data = { ...data, id: doc.id };
+            a.unshift(data);
+          });
+          setsongs(a);
         });
     }
   }, [Albumid]);
+
+  console.log(songs);
 
   return (
     <div>

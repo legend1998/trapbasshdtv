@@ -1,20 +1,17 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import {
-  Route,
-  BrowserRouter as Router,
-  Switch,
-  useRouteMatch,
-} from "react-router-dom";
+import { Route, useRouteMatch } from "react-router-dom";
 import Catalog from "./Catalog";
 import Dashboard from "./Dashboard";
 import Header from "./Header";
 import MobileHeader from "./MobileHeader";
 import Profile from "./Profile";
 import ReleaseCreate from "./ReleaseCreate";
-import Reports from "./Reports";
+import Payouts from "./Payouts";
 import Tickets from "./Tickets";
+import Chat from "./Chat";
+import ViewCatalogItem from "./ViewCatalogItem";
 
 function Panel() {
   let { path } = useRouteMatch();
@@ -33,7 +30,7 @@ function Panel() {
   };
 
   return (
-    <div className="row " style={style.animate}>
+    <div className="row" style={style.animate}>
       {width < 720 ? <MobileHeader /> : <Header />}
       <Route path={`${path}/catalog`}>
         <Catalog />
@@ -44,14 +41,20 @@ function Panel() {
       <Route path={`${path}/tickets`}>
         <Tickets />
       </Route>
-      <Route path={`${path}/reports`}>
-        <Reports />
+      <Route path={`${path}/payouts`}>
+        <Payouts />
       </Route>
-      <Route path={`${path}/releasecreate`}>
+      <Route path={`${path}/createrelease`}>
         <ReleaseCreate />
       </Route>
       <Route path={`${path}/dashboard`}>
         <Dashboard />
+      </Route>
+      <Route path={`${path}/album/:id`}>
+        <ViewCatalogItem />
+      </Route>
+      <Route path={`${path}/ticket/:id`}>
+        <Chat />
       </Route>
     </div>
   );

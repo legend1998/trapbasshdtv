@@ -1,17 +1,30 @@
 import React from "react";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useState } from "react";
+import { firedb } from "./firebaseConfig";
+import { useStateValue } from "./StateProvider";
 
 function NewTicket({ closetab }) {
-  const [ticket, setTicket] = useState({});
+  const [ticket, setTicket] = useState({ status: "ongoing", date: Date.now() });
+  const [{ user }] = useStateValue();
 
   const submitTicket = () => {
     if (Object.keys(ticket).length < 2) return;
     console.log(ticket);
-
     // little work left here.
+    firedb
+      .collection("user")
+      .doc(user.email)
+      .collection("tickets")
+      .add(ticket)
+      .then((doc) => {
+        alert("ticket created.");
+      })
+      .catch((e) => {
+        alert(e);
+      });
   };
-
+  console.log(ticket);
   return (
     <div className="song-detail-container">
       <div className="song-detail text-left">
@@ -21,13 +34,16 @@ function NewTicket({ closetab }) {
         <p className="text-muted">Reason</p>
         <select
           name="reason"
-          id=""
           className="form-control"
           onChange={(e) => setTicket({ ...ticket, reason: e.target.value })}
         >
-          <option value="default" default>
+          <option value="default" selected>
             default
           </option>
+          <option value="change in release">change in release</option>
+          <option value="callertune codes">callertune codes</option>
+          <option value="delivery status">delivery status</option>
+          <option value="takedown request">takedown request</option>
         </select>
         <p className="text-muted">describe it.</p>
         <textarea
@@ -42,7 +58,7 @@ function NewTicket({ closetab }) {
         <input
           type="file"
           className="form-control"
-          onChange={(e) => setTicket({ ...ticket, reason: e.target.files[0] })}
+          onChange={(e) => setTicket({ ...ticket, file: e.target.files[0] })}
         />
         <p className="text-muted">
           supported file formats *jpg *png *txt *pdf *docx

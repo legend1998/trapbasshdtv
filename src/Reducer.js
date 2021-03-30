@@ -1,5 +1,5 @@
 export const initialState = {
-  user: null,
+  user: JSON.parse(localStorage.getItem("user")),
 };
 
 const reducer = (state, action) => {
@@ -10,6 +10,7 @@ const reducer = (state, action) => {
         user: action.user,
       };
     case "DELETE_USER":
+      localStorage.clear();
       return {
         ...state,
         user: null,

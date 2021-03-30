@@ -3,21 +3,25 @@ import { useState } from "react";
 import TopHeader from "./TopHeader";
 import { firedb } from "./firebaseConfig";
 import { Link } from "react-router-dom";
+import { useStateValue } from "./StateProvider";
 
 function Catalog() {
   const [album, setalbum] = useState([]);
+  const [{ user }] = useStateValue();
+  const [filter, setfilter] = useState("all");
 
   useEffect(() => {
     firedb.collection("album").onSnapshot((snapshot) => {
-      var a =[]
-      snapshot.docs.forEach((doc)=>{
+      var a = [];
+      snapshot.docs.forEach((doc) => {
         var data = doc.data();
-        data = {...data, id:doc.id};
-        a.unshift(data);
-      })
-      setalbum(a);
-      console.log(album);
 
+        if (doc.data().email === user.email) {
+          data = { ...data, id: doc.id };
+          a.unshift(data);
+        }
+      });
+      setalbum(a);
     });
   }, []);
 
@@ -36,19 +40,34 @@ function Catalog() {
             />
           </div>
           <div className="col-sm">
-            <select name="" id="" className="form-control">
-              <option value="default" defaultValue>
-                default
+            <select
+              className="form-control"
+              onChange={(e) => setfilter(e.target.value)}
+            >
+              <option value="all" selected>
+                All
+              </option>
+              <option value="draft" selected>
+                Draft
+              </option>
+              <option value="moderation" selected>
+                Moderation
+              </option>
+              <option value="approved" selected>
+                Approved
+              </option>
+              <option value="live" selected>
+                Live
               </option>
             </select>
           </div>
-          <div className="col-sm">total Release :</div>
+          <div className="col-sm">total Release :{album.length}</div>
         </div>
       </div>
       <br />
       <br />
 
-      <div className="container">
+      <div className="container overflow-scroll">
         <table className="table table-collapse">
           <thead>
             <tr>
@@ -63,20 +82,39 @@ function Catalog() {
             </tr>
           </thead>
           <tbody>
-            {album.map((alb, index) => (
-              <tr key={index}>
-                <td>{index}</td>
-                <td>{alb.releaseTitle}</td>
-                <td>{alb.primaryArtist}</td>
-                <td>{alb.genre}</td>
-                <td>{alb.labelName}</td>
-                <td>0</td>
-                <td>{alb.releaseDate}</td>
-                <td>
-                  <Link to={`/album_id:${alb.id}`}>view</Link>
-                </td>
-              </tr>
-            ))}
+            {album.map((alb, index) => {
+              if (filter === "all")
+                return (
+                  <tr key={index}>
+                    <td>{index}</td>
+                    <td>{alb.releaseTitle}</td>
+                    <td>{alb.primaryArtist}</td>
+                    <td>{alb.genre}</td>
+                    <td>{alb.labelName}</td>
+                    <td>0</td>
+                    <td>{alb.releaseDate}</td>
+                    <td>
+                      <Link to={`album/${alb.id}`}>view</Link>
+                    </td>
+                  </tr>
+                );
+              else if (filter !== "all" && alb.status === filter)
+                return (
+                  <tr key={index}>
+                    <td>{index}</td>
+                    <td>{alb.releaseTitle}</td>
+                    <td>{alb.primaryArtist}</td>
+                    <td>{alb.genre}</td>
+                    <td>{alb.labelName}</td>
+                    <td>0</td>
+                    <td>{alb.releaseDate}</td>
+                    <td>
+                      <Link to={`album/${alb.id}`}>view</Link>
+                    </td>
+                  </tr>
+                );
+              return null;
+            })}
           </tbody>
         </table>
       </div>

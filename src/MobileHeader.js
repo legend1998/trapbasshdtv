@@ -1,51 +1,82 @@
 import React from "react";
 import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function MobileHeader() {
-  const toggler = (e) => {
-    var nav = document.getElementById("mobile-nav").childNodes;
-    nav.forEach((element) => {
-      element.classList.remove("active");
-    });
-    e.currentTarget.classList.add("active");
-  };
+  const [tab, settab] = useState(1);
+  const [toggle, settoggle] = useState(false);
 
-  const togglemenu = () => {
-    var menu = document.getElementById("mobile-nav");
-    if (menu.style.display === "none") {
-      menu.style.display = "flex";
-    } else {
-      menu.style.display = "none";
-    }
+  var style = {
+    cursor: {
+      cursor: "pointer",
+      paddingLeft: "30px",
+      fontSize: "12px",
+    },
+    logoposition: {
+      "margin-left": "30px",
+      top: "30px",
+      border: "1px solid red",
+    },
+    active: {
+      background:
+        "linear-gradient(90deg, rgb(180, 104, 224), rgb(228, 99, 196))",
+      color: "white",
+    },
   };
 
   return (
     <nav className="mobileheader-container">
       <div className="nav navbar bg-dark text-light navbar-dark  mobileheader">
         <div className="menuicon">
-          <MenuIcon onClick={togglemenu} />
+          <MenuIcon onClick={() => settoggle(!toggle)} />
         </div>
-        <div className="navbar-nav" id="mobile-nav">
-          <Link to="/" className="active   " onClick={(e) => toggler(e)}>
-            DashBoard
-          </Link>
-          <Link to="catalog" onClick={(e) => toggler(e)}>
-            Catalog
-          </Link>
-          <Link to="createrelease" onClick={(e) => toggler(e)}>
-            Create Release
-          </Link>
-          <Link to="reports" onClick={(e) => toggler(e)}>
-            Poyouts
-          </Link>
-          <Link to="tickets" onClick={(e) => toggler(e)}>
-            Tickets
-          </Link>
-          <Link to="withdrawel" onClick={(e) => toggler(e)}>
-            My Profile
-          </Link>
-        </div>
+        {toggle ? (
+          <div className="navbar-nav" id="mobile-nav">
+            <Link
+              to="dashboard"
+              style={tab === 1 ? style.active : null}
+              onClick={() => settab(1)}
+            >
+              DashBoard
+            </Link>
+            <Link
+              to="catalog"
+              style={tab === 2 ? style.active : null}
+              onClick={() => settab(2)}
+            >
+              Catalog
+            </Link>
+            <Link
+              to="createrelease"
+              style={tab === 3 ? style.active : null}
+              onClick={() => settab(3)}
+            >
+              Create Release
+            </Link>
+            <Link
+              to="payouts"
+              style={tab === 4 ? style.active : null}
+              onClick={() => settab(4)}
+            >
+              Poyouts
+            </Link>
+            <Link
+              to="tickets"
+              style={tab === 5 ? style.active : null}
+              onClick={() => settab(5)}
+            >
+              Tickets
+            </Link>
+            <Link
+              to="profile"
+              style={tab === 6 ? style.active : null}
+              onClick={() => settab(6)}
+            >
+              My Profile
+            </Link>
+          </div>
+        ) : null}
       </div>
     </nav>
   );

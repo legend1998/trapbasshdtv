@@ -18,11 +18,12 @@ function Login() {
         auth
           .signInWithEmailAndPassword(User.email, User.password)
           .then(() => {
-            history.replace("/panel");
+            history.replace("/panel/dashboard");
             dispatch({
               type: "SET_USER",
               user: doc.data(),
             });
+            localStorage.setItem("user", JSON.stringify(doc.data()));
           })
           .catch((e) => {
             alert(e.message);

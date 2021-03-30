@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { firedb } from "./firebaseConfig";
 import PlatformCard from "./PlatformCard";
 
-function Platform() {
+function Platform({ allow, toggle }) {
   const [platforms, setplatforms] = useState([]);
   useEffect(() => {
     firedb.collection("platforms").onSnapshot((snapshot) => {
@@ -30,7 +30,15 @@ function Platform() {
         />
       </div>
       <div className="container text-center">
-        <button className="btn btn-outline-dark">submit</button>
+        <button
+          className="btn btn-outline-dark"
+          onClick={() => {
+            allow([1, 2, 3, 4]);
+            toggle(3);
+          }}
+        >
+          submit
+        </button>
       </div>
     </div>
   );

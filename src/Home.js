@@ -13,11 +13,11 @@ function Home() {
   });
 
   const style = {
-    padding: {
-      "padding-left": "30px",
-    },
     headerBack: {
-      "background-color": scrolly < 50 ? "#00000000" : "#3d0a3d",
+      backgroundColor: scrolly < 50 ? "#00000000" : "#3d0a3d",
+    },
+    padding: {
+      paddingLeft: "30px",
     },
   };
 

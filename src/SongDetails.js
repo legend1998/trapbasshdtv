@@ -9,8 +9,8 @@ function SongDetails({ close, albumId, songId }) {
   const [genre, setgenre] = useState([]);
 
   const updatesongDetails = () => {
-    if (Object.keys(Song).length < 20) {
-      alert("fill all the details");
+    if (Object.keys(Song).length !== 19) {
+      alert(`fill all the details, ${Object.keys(Song).length}`);
       return;
     }
     firedb
@@ -20,10 +20,11 @@ function SongDetails({ close, albumId, songId }) {
       .doc(songId)
       .update(Song)
       .then((doc) => {
-        console.log(doc.data());
+        alert("success");
       })
       .catch((e) => {
         console.log(e);
+        alert(e);
       });
   };
 
@@ -260,13 +261,9 @@ function SongDetails({ close, albumId, songId }) {
           <p className="text-muted">
             Sub-Genre <span className="required-span">*</span>
           </p>
-          <select
-            name=""
-            id=""
+          <input
             onChange={(e) => setSong({ ...Song, subGenre: e.target.value })}
-          >
-            <option value="default"></option>
-          </select>
+          />
         </div>
         <div>
           <p className="text-muted">
@@ -277,7 +274,12 @@ function SongDetails({ close, albumId, songId }) {
             id=""
             onChange={(e) => setSong({ ...Song, priceTier: e.target.value })}
           >
-            <option value="default"></option>
+            <option value="default" selected>
+              --select--
+            </option>
+            <option value="low-tier">low tier</option>
+            <option value="mid-tier">mid-tier</option>
+            <option value="high-tier">high-tier</option>
           </select>
         </div>
         <div>
@@ -333,7 +335,11 @@ function SongDetails({ close, albumId, songId }) {
               setSong({ ...Song, trackTitleLanguage: e.target.value })
             }
           >
-            <option value="default"></option>
+            <option value="default" selected>
+              --select--
+            </option>
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
           </select>
         </div>
         <div>
@@ -347,7 +353,11 @@ function SongDetails({ close, albumId, songId }) {
               setSong({ ...Song, lyricLanguage: e.target.value })
             }
           >
-            <option value="default"></option>
+            <option value="default" selected>
+              --select--
+            </option>
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
           </select>
         </div>
         <div>

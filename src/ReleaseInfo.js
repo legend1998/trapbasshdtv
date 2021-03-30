@@ -1,6 +1,7 @@
 import React from "react";
 
-function SingleSongInfo({ song }) {
+function ReleaseInfo({ album }) {
+  console.log(album);
   const style = {
     para: {
       float: "left",
@@ -14,14 +15,22 @@ function SingleSongInfo({ song }) {
     },
   };
   return (
-    <div className="container">
-      {Object.keys(song).map((key, index) => {
+    <div className="container m-3">
+      {Object.keys(album).map((key, index) => {
+        if (
+          key === "releaseTitle" ||
+          key === "thumbnail" ||
+          key === "musicUrl" ||
+          key === "earnings" ||
+          key === "status"
+        )
+          return null;
         return (
           <label key={index} style={style.para} className="fs-5">
             <p style={style.span} className="text-muted mr-3">
               {key}
             </p>
-            {song[key]}
+            {album[key]}
           </label>
         );
       })}
@@ -29,4 +38,4 @@ function SingleSongInfo({ song }) {
   );
 }
 
-export default SingleSongInfo;
+export default ReleaseInfo;

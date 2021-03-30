@@ -2,15 +2,29 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { firedb } from "./firebaseConfig";
 import NewTicket from "./NewTicket";
+import { useStateValue } from "./StateProvider";
+import { Link } from "react-router-dom";
+
 import TopHeader from "./TopHeader";
 
 function Tickets() {
   const [Ticket, setTicket] = useState([]);
+  const [{ user }] = useStateValue();
   const [showdialog, setshowdialog] = useState(false);
   useEffect(() => {
-    firedb.collection("ticket").onSnapshot((snapshot) => {
-      setTicket(snapshot.docs);
-    });
+    firedb
+      .collection("user")
+      .doc(user.email)
+      .collection("tickets")
+      .onSnapshot((snapshot) => {
+        var a = [];
+        snapshot.docs.forEach((doc) => {
+          var data = doc.data();
+          data = { ...data, id: doc.id };
+          a.unshift(data);
+        });
+        setTicket(a);
+      });
   }, []);
   return (
     <div className="tickets col-sm p-0">
@@ -38,17 +52,21 @@ function Tickets() {
             <tr>
               <th>No.</th>
               <th>Reason</th>
-              <th>Created At</th>
               <th>status</th>
+              <th>action</th>
             </tr>
           </thead>
           <tbody>
             {Ticket.map((t, index) => (
-              <tr>
-                <td>{index}</td>
+              <tr key={index}>
+                <td>{index + 1}</td>
                 <td>{t.reason}</td>
-                <td>{t.createdAt}</td>
-                <td>{t.status}</td>
+                <td>{t?.status ? t.status : "pending"}</td>
+                <td>
+                  <Link className="btn btn-warning" to={`ticket/${t.id}`}>
+                    view
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
